@@ -1,4 +1,5 @@
-from collections.abc import Callable, Iterable
+import operator
+from collections.abc import Callable, Iterable, Iterator
 from itertools import groupby, repeat
 from typing import Any
 
@@ -35,3 +36,42 @@ def compress[T](
 def decompress[T](data: Iterable[tuple[T, int]]) -> Iterable[T]:
     for k, n in data:
         yield from repeat(k, n)
+
+
+def to_deltas[T](
+    data: Iterable[T],
+    op: Callable[[T, T], T] = operator.sub,
+) -> Iterable[T]:
+    seq: Iterator[T] = iter(data)
+
+    curr: T | None = next(seq, None)
+    if curr is None:
+        return
+
+    yield curr
+
+    prev: T = curr
+    for curr in seq:
+        yield op(curr, prev)
+
+        prev = curr
+
+
+def from_deltas[T](
+    data: Iterable[T],
+    op: Callable[[T, T], T] = operator.add,
+) -> Iterable[T]:
+    seq: Iterator[T] = iter(data)
+
+    curr: T | None = next(seq, None)
+    if curr is None:
+        return
+
+    yield curr
+
+    prev: T = curr
+    for curr in seq:
+        res: T = op(prev, curr)
+        yield res
+
+        prev = res
