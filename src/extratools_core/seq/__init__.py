@@ -1,4 +1,8 @@
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from itertools import groupby, repeat
+from typing import Any
+
+from toolz import itertoolz
 
 from ..typing import Comparable
 from .common import iter_to_seq  # noqa: F401
@@ -18,3 +22,16 @@ def sorted_by_rank[T](
             reverse=_reverse,
         )
     ]
+
+
+def compress[T](
+    data: Iterable[T],
+    key: Callable[[T], Any] | None = None,
+) -> Iterable[tuple[T, int]]:
+    for k, g in groupby(data, key=key):
+        yield (k, itertoolz.count(g))
+
+
+def decompress[T](data: Iterable[tuple[T, int]]) -> Iterable[T]:
+    for k, n in data:
+        yield from repeat(k, n)
