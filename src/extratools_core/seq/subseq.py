@@ -77,3 +77,16 @@ def common_subseq[T](a: Iterable[T], b: Iterable[T]) -> Iterable[T]:
         key=lambda x: x[1] - x[0],
     )):
         yield aseq[k]
+
+
+def is_subseq[T](a: Iterable[T], b: Iterable[T]) -> bool:
+    aseq: Sequence[T] = iter_to_seq(a)
+    bseq: Sequence[T] = iter_to_seq(b)
+
+    if len(aseq) > len(bseq):
+        return False
+
+    return any(
+        aseq == bseq[j:j + len(aseq)]
+        for j in range(len(bseq) - len(aseq) + 1)
+    )
