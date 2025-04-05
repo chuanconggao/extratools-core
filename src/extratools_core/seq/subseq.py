@@ -92,6 +92,28 @@ def is_subseq[T](a: Iterable[T], b: Iterable[T]) -> bool:
     )
 
 
+def common_subseq_with_gaps[T](a: Iterable[T], b: Iterable[T]) -> Iterable[T]:
+    alignment: tuple[Iterable[T | None], Iterable[T | None]] = align(a, b)
+
+    return (
+        x
+        for x, y in zip(
+            *alignment,
+            strict=True,
+        )
+        if x is not None and y is not None
+    )
+
+
+def is_subseq_with_gaps[T](a: Iterable[T], b: Iterable[T]) -> bool:
+    alignment: tuple[Iterable[T | None], Iterable[T | None]] = align(a, b)
+
+    return all(
+        y is not None
+        for y in alignment[1]
+    )
+
+
 def align[T](
     a: Iterable[T],
     b: Iterable[T],
@@ -118,10 +140,12 @@ def align[T](
         int,
         tuple[Sequence[T | None], Sequence[T | None]],
     ]:
-        if alen == 0 or blen == 0:
+        if alen == 0:
             return 0, (
                 [default] * blen, bseq[:blen],
-            ) if alen == 0 else (
+            )
+        if blen == 0:
+            return 0, (
                 aseq[:alen], [default] * alen,
             )
 
