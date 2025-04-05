@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 
 from .iter import iter_to_grams
-from .seq.subseq import common_subseq
+from .seq.subseq import common_subseq, enumerate_subseqs
 
 
 def str_to_grams(
@@ -19,3 +19,7 @@ def str_to_grams(
 
 def common_substr(a: str, b: str) -> str:
     return ''.join(common_subseq(a, b))
+
+
+def enumerate_substrs(s: str) -> Iterable[str]:
+    return map(str, enumerate_subseqs(s))
