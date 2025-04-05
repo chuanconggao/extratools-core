@@ -1,4 +1,5 @@
 from collections.abc import Callable, Iterable, Sequence
+from functools import cache
 from itertools import chain
 
 from . import iter_to_seq
@@ -52,3 +53,27 @@ def best_subseq_with_gaps[T](
 
     s: Sequence[T] = iter_to_seq(a)
     return find_rec(len(s))[1]
+
+
+def common_subseq[T](a: Iterable[T], b: Iterable[T]) -> Iterable[T]:
+    @cache
+    # Find the start pos in `a` for longest common subseq aligned from right to left
+    # between `a[:alen]` and `b[:blen]`
+    def align_rec(alen: int, blen: int) -> int:
+        if alen == 0 or blen == 0 or aseq[alen - 1] != bseq[blen - 1]:
+            return alen
+
+        return align_rec(alen - 1, blen - 1)
+
+    aseq: Sequence[T] = iter_to_seq(a)
+    bseq: Sequence[T] = iter_to_seq(b)
+
+    for k in range(*max(
+        (
+            (align_rec(i, j), i)
+            for i in range(len(aseq) + 1)
+            for j in range(len(bseq) + 1)
+        ),
+        key=lambda x: x[1] - x[0],
+    )):
+        yield aseq[k]
