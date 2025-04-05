@@ -1,8 +1,24 @@
 from collections.abc import Callable, Iterable, Sequence
 from functools import cache
-from itertools import chain
+from itertools import chain, combinations
 
 from . import iter_to_seq
+
+
+def enumerate_subseqs[T](seq: Iterable[T]) -> Iterable[Sequence[T]]:
+    seq = iter_to_seq(seq)
+    seq_len: int = len(seq)
+
+    for i in range(seq_len):
+        for j in range(i + 1, seq_len + 1 if i > 0 else seq_len):
+            yield seq[i:j]
+
+
+def enumerate_subseqs_with_gaps[T](seq: Iterable[T]) -> Iterable[Sequence[T]]:
+    seq = iter_to_seq(seq)
+
+    for i in range(1, len(seq)):
+        yield from combinations(seq, i)
 
 
 def best_subseq[T](
