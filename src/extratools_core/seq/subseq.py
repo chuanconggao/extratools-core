@@ -90,3 +90,51 @@ def is_subseq[T](a: Iterable[T], b: Iterable[T]) -> bool:
         aseq == bseq[j:j + len(aseq)]
         for j in range(len(bseq) - len(aseq) + 1)
     )
+
+
+def align[T](
+    a: Iterable[T],
+    b: Iterable[T],
+    *,
+    default: T | None = None,
+) -> tuple[Iterable[T | None], Iterable[T | None]]:
+    def merge(
+        prev: tuple[int, tuple[Sequence[T | None], Sequence[T | None]]],
+        curr: tuple[T | None, T | None],
+    ) -> tuple[int, tuple[Sequence[T | None], Sequence[T | None]]]:
+        prev_matches: int
+        u: Sequence[T | None]
+        v: Sequence[T | None]
+        prev_matches, (u, v) = prev
+
+        x: T | None
+        y: T | None
+        x, y = curr
+
+        return (prev_matches + 1) if x == y else prev_matches, ([*u, x], [*v, y])
+
+    @cache
+    def align_rec(alen: int, blen: int) -> tuple[
+        int,
+        tuple[Sequence[T | None], Sequence[T | None]],
+    ]:
+        if alen == 0 or blen == 0:
+            return 0, (
+                [default] * blen, bseq[:blen],
+            ) if alen == 0 else (
+                aseq[:alen], [default] * alen,
+            )
+
+        return max(
+            (
+                merge(align_rec(alen - 1, blen), (aseq[alen - 1], default)),
+                merge(align_rec(alen, blen - 1), (default, bseq[blen - 1])),
+                merge(align_rec(alen - 1, blen - 1), (aseq[alen - 1], bseq[blen - 1])),
+            ),
+            key=lambda x: x[0],
+        )
+
+    aseq: Sequence[T] = iter_to_seq(a)
+    bseq: Sequence[T] = iter_to_seq(b)
+
+    return align_rec(len(aseq), len(bseq))[1]
