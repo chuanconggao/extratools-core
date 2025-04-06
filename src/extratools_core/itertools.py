@@ -1,6 +1,6 @@
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Iterator, Sequence
 from itertools import chain, count, repeat
-from typing import Iterator, cast
+from typing import cast
 
 from toolz.itertoolz import sliding_window
 
