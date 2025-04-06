@@ -22,21 +22,21 @@ def enumerate_subseqs_with_gaps[T](seq: Iterable[T]) -> Iterable[Sequence[T]]:
 
 
 def best_subseq[T](
-    a: Iterable[T],
+    seq: Iterable[T],
     score_func: Callable[[Iterable[T]], float],
 ) -> Sequence[T]:
     return max(
-        chain([[]], enumerate_subseqs(a)),
+        chain([[]], enumerate_subseqs(seq)),
         key=score_func,
     )
 
 
 def best_subseq_with_gaps[T](
-    a: Iterable[T],
+    seq: Iterable[T],
     score_func: Callable[[Iterable[T]], float],
 ) -> Sequence[T]:
     return max(
-        chain([[]], enumerate_subseqs_with_gaps(a)),
+        chain([[]], enumerate_subseqs_with_gaps(seq)),
         key=score_func,
     )
 
