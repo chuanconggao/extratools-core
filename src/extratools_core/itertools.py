@@ -9,23 +9,23 @@ from .typing import Comparable
 
 
 def iter_to_grams[T](
-    _iter: Iterable[T],
+    data: Iterable[T],
     *,
     n: int,
     pad: T | None = None,
 ) -> Iterable[Sequence[T]]:
     if pad is not None:
-        _iter = chain(
+        data = chain(
             repeat(pad, n - 1),
-            _iter,
+            data,
             repeat(pad, n - 1),
         )
 
-    return sliding_window(n, _iter)
+    return sliding_window(n, data)
 
 
 def is_sorted[T](
-    seq: Iterable[T],
+    data: Iterable[T],
     *,
     key: Callable[[T], Comparable] | None = None,
     reverse: bool = False,
@@ -44,18 +44,18 @@ def is_sorted[T](
             local_key(prev) >= local_key(curr) if reverse
             else local_key(prev) <= local_key(curr)
         )
-        for prev, curr in sliding_window(2, seq)
+        for prev, curr in sliding_window(2, data)
     )
 
 
-def filter_by_positions[T](poss: Iterable[int], seq: Iterable[T]) -> Iterable[T]:
+def filter_by_positions[T](poss: Iterable[int], data: Iterable[T]) -> Iterable[T]:
     p: Iterator[int] = iter(poss)
 
     pos: int | None = next(p, None)
     if pos is None:
         return
 
-    for i, v in enumerate(seq):
+    for i, v in enumerate(data):
         if i == pos:
             yield v
 
@@ -64,8 +64,8 @@ def filter_by_positions[T](poss: Iterable[int], seq: Iterable[T]) -> Iterable[T]
                 return
 
 
-def filter_by_others[T](func: Callable[[T, T], bool], _iter: Iterable[T]) -> Iterable[T]:
-    seq: Sequence[T] = iter_to_seq(_iter)
+def filter_by_others[T](func: Callable[[T, T], bool], data: Iterable[T]) -> Iterable[T]:
+    seq: Sequence[T] = iter_to_seq(data)
 
     filtered_ids: set[int] = set(range(len(seq)))
 
