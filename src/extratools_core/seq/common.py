@@ -2,10 +2,10 @@ from collections.abc import Callable, Iterable, Sequence
 
 
 def iter_to_seq[T](
-    a: Iterable[T],
+    data: Iterable[T],
     target: Callable[[Iterable[T]], Sequence[T]] = tuple,
 ) -> Sequence[T]:
-    if isinstance(a, Sequence):
-        return a
+    if isinstance(data, Sequence):
+        return data
 
-    return target(a)
+    return target(data)
