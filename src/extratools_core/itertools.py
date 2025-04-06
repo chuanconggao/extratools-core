@@ -5,6 +5,7 @@ from typing import cast
 from toolz.itertoolz import sliding_window
 
 from .seq import iter_to_seq
+from .typing import Comparable
 
 
 def iter_to_grams[T](
@@ -21,6 +22,30 @@ def iter_to_grams[T](
         )
 
     return sliding_window(n, _iter)
+
+
+def is_sorted[T](
+    seq: Iterable[T],
+    *,
+    key: Callable[[T], Comparable] | None = None,
+    reverse: bool = False,
+) -> bool:
+    local_key: Callable[[T], Comparable]
+    if key is None:
+        def default_key(v: T) -> Comparable:
+            return cast("Comparable", v)
+
+        local_key = default_key
+    else:
+        local_key = key
+
+    return all(
+        (
+            local_key(prev) >= local_key(curr) if reverse
+            else local_key(prev) <= local_key(curr)
+        )
+        for prev, curr in sliding_window(2, seq)
+    )
 
 
 def filter_by_positions[T](poss: Iterable[int], seq: Iterable[T]) -> Iterable[T]:
