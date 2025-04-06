@@ -1,5 +1,6 @@
 from collections.abc import Callable, Iterable, Sequence
-from itertools import chain, repeat
+from itertools import chain, count, repeat
+from typing import cast
 
 from toolz.itertoolz import sliding_window
 
@@ -42,3 +43,25 @@ def filter_by_others[T](func: Callable[[T, T], bool], _iter: Iterable[T]) -> Ite
 
     for i in filtered_ids:
         yield seq[i]
+
+
+def remap[KT, VT](
+    data: Iterable[KT],
+    mapping: dict[KT, VT],
+    *,
+    key: Callable[[KT], VT] | None = None,
+) -> Iterable[VT]:
+    local_key: Callable[[KT], VT]
+    if key is None:
+        c = count(start=0)
+
+        def default_key(_: KT) -> VT:
+            return cast("VT", next(c))
+
+        local_key = default_key
+    else:
+        local_key = key
+
+    k: KT
+    for k in data:
+        yield mapping.setdefault(k, local_key(k))
