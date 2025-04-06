@@ -1,9 +1,10 @@
 import operator
-from collections.abc import Callable, Iterable, Iterator
+from collections import Counter
+from collections.abc import Callable, Iterable, Iterator, Mapping
 from itertools import groupby, repeat
-from typing import Any
+from typing import Any, cast
 
-from toolz import itertoolz
+from toolz import itertoolz, unique
 
 from ..typing import Comparable
 from .common import iter_to_seq  # noqa: F401
@@ -75,3 +76,14 @@ def from_deltas[T](
         yield res
 
         prev = res
+
+
+def key_frequencies[KT, VT](
+    *seqs: Iterable[KT],
+    key: Callable[[KT], VT] | None = None,
+) -> Mapping[VT, int]:
+    c: Counter[VT] = Counter()
+    for seq in seqs:
+        c.update(cast("Iterable[VT]", unique(seq, key=key)))
+
+    return c
