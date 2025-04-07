@@ -1,11 +1,10 @@
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Callable, Iterable, Iterator, Mapping, Sequence
 from itertools import chain, count, repeat
-from typing import Mapping, cast
+from typing import cast
 
 from toolz.itertoolz import sliding_window
 
 from .dict import invert
-
 from .seq import iter_to_seq
 from .typing import Comparable
 
