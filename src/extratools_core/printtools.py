@@ -22,6 +22,9 @@ def sorted_to_str[T](
 
     first: bool = True
     for prev, curr in sliding_window(2, seq):
+        if local_key(prev) > local_key(curr):
+            raise ValueError
+
         if first:
             s.write(repr(prev))
             first = False
