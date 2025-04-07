@@ -1,8 +1,10 @@
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from itertools import chain, count, repeat
-from typing import cast
+from typing import Mapping, cast
 
 from toolz.itertoolz import sliding_window
+
+from .dict import invert
 
 from .seq import iter_to_seq
 from .typing import Comparable
@@ -88,16 +90,20 @@ def filter_by_others[T](func: Callable[[T, T], bool], data: Iterable[T]) -> Iter
 
 def remap[KT, VT](
     data: Iterable[KT],
-    mapping: dict[KT, VT],
+    mapping: Mapping[KT, VT],
     *,
     key: Callable[[KT], VT] | None = None,
 ) -> Iterable[VT]:
     local_key: Callable[[KT], VT]
     if key is None:
+        inverted_mapping: Mapping[VT, KT] = invert(mapping)
         c = count(start=0)
 
         def default_key(_: KT) -> VT:
-            return cast("VT", next(c))
+            while True:
+                v: int = next(c)
+                if v not in inverted_mapping:
+                    return cast("VT", v)
 
         local_key = default_key
     else:
