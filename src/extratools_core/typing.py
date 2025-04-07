@@ -77,7 +77,7 @@ class PurePathLike(Comparable, Protocol):
         ...
 
     @abstractmethod
-    def joinpath(self, *segments: str) -> Self:
+    def joinpath(self, *segments: Any) -> Self:
         ...
 
     @abstractmethod
@@ -98,6 +98,17 @@ class PurePathLike(Comparable, Protocol):
 
     @abstractmethod
     def with_stem(self, stem: str) -> Self:
+        ...
+
+    @abstractmethod
+    def with_segments(self, *segments: Any) -> Self:
+        ...
+
+    def __truediv__(self, key: Any, /) -> Self:
+        return self.with_segments(self, key)
+
+    @abstractmethod
+    def __rtruediv__(self, key: Any, /) -> Any:
         ...
 
 
