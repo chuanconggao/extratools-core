@@ -111,6 +111,10 @@ class PurePathLike(Comparable, Protocol):
     def __rtruediv__(self, key: Any, /) -> Any:
         ...
 
+    @abstractmethod
+    def __fspath__(self) -> str:
+        ...
+
 
 @runtime_checkable
 class PathLike(PurePathLike, Protocol):
