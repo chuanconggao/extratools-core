@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from abc import abstractmethod
-from typing import Protocol, runtime_checkable
+from typing import Protocol, Self, runtime_checkable
 
 
 @runtime_checkable
@@ -15,14 +13,14 @@ class Comparable(Protocol):  # noqa: PLW1641
         ...
 
     @abstractmethod
-    def __lt__(self, other: Comparable) -> bool:
+    def __lt__(self, other: Self) -> bool:
         ...
 
-    def __gt__(self, other: Comparable) -> bool:
+    def __gt__(self, other: Self) -> bool:
         return (not self < other) and self != other
 
-    def __le__(self, other: Comparable) -> bool:
+    def __le__(self, other: Self) -> bool:
         return self < other or self == other
 
-    def __ge__(self, other: Comparable) -> bool:
+    def __ge__(self, other: Self) -> bool:
         return (not self < other)
