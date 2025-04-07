@@ -1,7 +1,7 @@
-from pathlib import Path
+from .typing import PathLike
 
 
-def clear_dir(curr_dir: Path) -> None:
+def clear_dir(curr_dir: PathLike) -> None:
     """
     Based on example in https://docs.python.org/3/library/pathlib.html#pathlib.Path.walk
     """
