@@ -10,7 +10,7 @@ def str_to_grams(
     n: int,
     pad: str = '',
 ) -> Iterable[str]:
-    if len(pad) > 1:
+    if n < 1 or len(pad) > 1:
         raise ValueError
 
     for c in iter_to_grams(s, n=n, pad=pad or None):
